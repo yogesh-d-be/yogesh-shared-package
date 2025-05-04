@@ -1,32 +1,47 @@
 require('dotenv').config();
-const {envSchema} = require('../schemas/envSchema');
-
-const {error, value} = envSchema.validate(process.env,{
-    allUnknown: true,
-    abortEarly: false
-});
-
-if (error) {
-    console.error('Environment variable validation error:', error.details);
-    process.exit(1);
-  } else {
-    console.log('Environment variables loaded and validated successfully');
-  }
+const {getEnvSchema} = require('../schemas/envSchema');
 
 
-exports.globalConfig = {
-    app:{
-        name: value.APP_NAME,
-        env: value.NODE_ENV,
-    },
-    mongodb:{
-        uri: value.MONGODB_URI
-    },
-    password:{
-        hashPassword:value.HASHING_SECRET
-    },
-    limiter:{
-        windowms: value.WINDOWMS,
-        max: value.MAX
-    }
+
+exports.validateEnv = (customKeys =[]) => {
+
+    const envSchema = getEnvSchema(customKeys.map(([key, description])=> [key, description]));
+    
+    const {error, value} = envSchema.validate(process.env,{
+        allUnknown: true,
+        abortEarly: false
+    });     
+
+    if (error) {
+        console.error(
+          '❌ Environment validation error:',
+          error.details.map((e) => e.message).join(', ')
+        );
+        process.exit(1);
+      }
+      const config = {
+        app:{
+            name: value.APP_NAME,
+            env: value.NODE_ENV,
+        },
+        mongodb:{
+            uri: value.MONGODB_URI
+        },
+      }
+
+
+      for (const [key, , target =null] of customKeys){
+        const upperKey = key.toUpperCase();
+        const lowerKey = key.toLowerCase();
+
+        if(target){
+            config[target] = config[target] || {};
+            config[target][lowerKey] = value[upperKey];
+        }else{
+            config[lowerKey] = value[upperKey];
+        }
+      }
+
+      return config;
 }
+

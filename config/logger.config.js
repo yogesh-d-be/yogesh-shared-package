@@ -1,7 +1,7 @@
 const path = require('path');
 const {globalConfig} = require('./global.config');
 
-const isDev = globalConfig.app.env !== 'production';
+// const isDev = globalConfig.app.env !== 'production';
 
 //common log rotation settings
 const logOptions = {
@@ -18,4 +18,4 @@ const logFiles ={
     }
 
 
-module.exports = {isDev, logOptions, logFiles};
+module.exports = {logOptions, logFiles};

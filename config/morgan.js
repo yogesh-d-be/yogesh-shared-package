@@ -1,12 +1,13 @@
 const morgan = require('morgan');
-const {globalConfig} = require('./global.config');
 const logger = require('./logger');
 
 morgan.token('message', (req, res) => res.locals.errorMessage || '');
 morgan.token('body', (req) => JSON.stringify(req.body));
 morgan.token('query', (req) => JSON.stringify(req.query));
 
-const getIpFormat = () => (globalConfig.app.env === 'production' ? ':remote-addr - ' : '');
+exports.morganResponseHandler = (appEnv = 'production') => {
+  
+const getIpFormat = () => (appEnv === 'production' ? ':remote-addr - ' : '');
 const successResponseFormat = `${getIpFormat()}:method :url :status - :response-time ms`;
 const errorResponseFormat = `${getIpFormat()}:method :url :status - :response-time ms - message: :message`;
 
@@ -20,7 +21,9 @@ const errorHandler = morgan(errorResponseFormat, {
   stream: { write: (message) => logger.error(message.trim()) },
 });
 
-module.exports = {
+return {
   successHandler,
   errorHandler,
 };
+
+}

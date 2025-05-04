@@ -7,4 +7,4 @@ This package provides common configuration, middleware, and utility functions us
 To install the package:
 
 ```bash
-npm install @yogesh-d-be/node-mongo-core
+npm install node-mongo-core

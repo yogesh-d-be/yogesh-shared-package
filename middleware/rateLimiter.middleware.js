@@ -1,12 +1,11 @@
 const rateLimit = require('express-rate-limit');
-const logger = require('../utils/logger');
-const {globalConfig} = require('../config/global.config');
+const logger = require('../config/logger');
 const { StatusCodes } = require('http-status-codes');
 
 
-const authLimiter = rateLimit({
-    windowMs: globalConfig.limiter.windowms,
-    max: globalConfig.limiter.max,
+const authLimiter = (windowms = 15 * 60 * 1000, maxTime = 100) => rateLimit({
+    windowMs: windowms,
+    max: maxTime,
     skipSuccessfulRequests: true,
     standardHeaders: true,
     legacyHeaders: false,

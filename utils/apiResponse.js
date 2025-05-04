@@ -18,7 +18,7 @@ const sendSucess = (
     });
 }
 
-export const successResponse = {
+exports.successResponse = {
     created: (res, options = {}) => 
         sendSucess(res, {
             ...options,
@@ -48,7 +48,7 @@ export const successResponse = {
         })
 };
 
-export const errorResponse = ({
+exports.errorResponse = ({
     statusCode = 500,
     message = 'Something went wrong, please try again.',
     details = null,

@@ -6,6 +6,10 @@ const authentication = require('./middleware/auth.middleware');
 const errorCatcher = require('./middleware/error.middleware');
 const loggerMiddleware = require("./middleware/logger.middleware");
 const { authLimiter } = require("./middleware/rateLimiter.middleware");
+const buildUploadMiddleware = require("./middleware/multer");
+
+const createMongooseConnection = require("./persistance/connection");
+
 
 const { envSchema } = require("./schemas/envSchema");
 const joiSchema = require("./schemas/joiSchema");
@@ -13,9 +17,10 @@ const joiSchema = require("./schemas/joiSchema");
 const ApiError = require("./utils/apiError");
 const apiResponse = require('./utils/apiResponse');
 const catchAsync = require("./utils/catchAsync");
-const { createModel } = require("./utils/createModel");
+const { createModel } = require("./persistance/createModel");
 const  securePassword = require("./utils/hashPassword");
 const joiValidation = require('./utils/joiValidation');
+const corsConfig = require("./utils/corsConfig");
 
 
 module.exports = {
@@ -28,7 +33,12 @@ module.exports = {
         authentication,
         errorCatcher,
         loggerMiddleware,
-        authLimiter
+        authLimiter,
+        buildUploadMiddleware
+    },
+    persistance:{
+        createMongooseModel: createModel,
+        createMongooseConnection
     },
     schema:{
         envSchema,
@@ -38,7 +48,7 @@ module.exports = {
         customError:ApiError,
         apiResponse,
         asyncTransactionHandler: catchAsync,
-        createMongooseModel: createModel,
+        corsConfig,
         securePassword,
         joiValidation
     }
