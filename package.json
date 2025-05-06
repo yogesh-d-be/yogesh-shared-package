@@ -1,6 +1,6 @@
 {
   "name": "node-mongo-core",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A shared package containing middleware, config, and utility functions.",
   "main": "index.js",
   "type": "commonjs",
