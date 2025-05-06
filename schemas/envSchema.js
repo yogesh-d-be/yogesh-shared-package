@@ -11,15 +11,15 @@ const envSchemaCreate = (data = []) => {
     return obj;
 }
 
-const baseSchema = {
-    APP_NAME: Joi.string().required(),
-    NODE_ENV: Joi.string().valid('development', 'production').required(),
+// const baseSchema = {
+//     APP_NAME: Joi.string().required(),
+//     NODE_ENV: Joi.string().valid('development', 'production').required(),
 
-    MONGODB_URI: Joi.string().uri().required(),
-}
+//     MONGODB_URI: Joi.string().uri().required(),
+// }
 
 exports.getEnvSchema = (values = []) => Joi.object({
-    ...baseSchema,
+    // ...baseSchema,
     ...envSchemaCreate(values)
     // HASHING_SECRET: Joi.string().required().des,
     

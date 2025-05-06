@@ -4,7 +4,7 @@ const logger = require('../config/logger');
 const ApiError = require('../utils/apiError');
 
 
-exports.initErrorCatcher = (appEnv = 'production') => {
+const initErrorCatcher = (appEnv = 'production') => {
   const errorConverter = (err, req, res, next) => {
     let error = err;
   
@@ -56,7 +56,7 @@ exports.initErrorCatcher = (appEnv = 'production') => {
     };
 
     return {
-      errorConverter,
+      initErrorCatcher,
       errorHandler,
     };
 
