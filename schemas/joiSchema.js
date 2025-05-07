@@ -1,46 +1,79 @@
-const Joi = require('joi');
+const Joi = require("joi")
 
-const schemaFieldsType = (value) => {
-    if(value.type === String || typeof value === 'string') return Joi.string();
-    if(value.type === Number || typeof value === 'number') return Joi.number();
-    if(value.type === Boolean || typeof value === 'boolean') return Joi.boolean();
-    if(value.type === Date) return Joi.date();
-    if(value.type === Array) return Joi.array();
-    // if(value.type && value.type.name === '_id')
-    return Joi.any();
-};
+/**
+ * Builds a single Joi field based on the provided schema definition.
+ */
+function buildJoiField(properties, isUpdate = false) {
+  let joiField;
 
+  switch (properties.type) {
+    case String:
+      joiField = Joi.string();
+      if (properties.lowercase) joiField = joiField.lowercase();
+      if (properties.uppercase) joiField = joiField.uppercase();
+      if (properties.trim) joiField = joiField.trim();
+      if (properties.min) joiField = joiField.min(properties.min);
+      if (properties.max) joiField = joiField.max(properties.max);
+      if (properties.match) joiField = joiField.pattern(new RegExp(properties.match));
+      if (properties.enum) joiField = joiField.valid(...properties.enum);
+      if (properties.format === "email") joiField = joiField.email();
+      if (properties.format === "uri") joiField = joiField.uri();
+      break;
 
-const generateJoiSchema = (mongooseSchemaObj, extraValidations = {}, isUpdate = false) => {
-    const joiSchemaObj = {};
+    case Number:
+      joiField = Joi.number();
+      if (properties.min) joiField = joiField.min(properties.min);
+      if (properties.max) joiField = joiField.max(properties.max);
+      if (properties.enum) joiField = joiField.valid(...properties.enum);
+      break;
 
-    for(const [key, value] of Object.entries(mongooseSchemaObj)){
-        let fieldSchema = schemaFieldsType(value);
+    case Boolean:
+      joiField = Joi.boolean();
+      break;
 
-        if(isUpdate){
-            fieldSchema = fieldSchema.optional();
-        }else{
-            if(value.required){
-                fieldSchema = fieldSchema.required();
-            }else{
-                fieldSchema = fieldSchema.optional();
-            }
-        }
+    case Date:
+      joiField = Joi.date();
+      break;
 
-        //extravalidations
-        if(typeof extraValidations[key] === 'function'){
-            fieldSchema = extraValidations[key](fieldSchema);
-        };
+    case Array:
+      joiField = Joi.array();
+      if (properties.items) {
+        joiField = joiField.items(buildJoiField(properties.items, isUpdate));
+      }
+      break;
 
-        joiSchemaObj[key] = fieldSchema;
-    };
+    case Object:
+      joiField = Joi.object(buildJoiSchema(properties.schema, isUpdate));
+      break;
 
-    return Joi.object(joiSchemaObj);
+    default:
+      joiField = Joi.any(); // Fallback
+  }
 
-};
+  if (properties.default !== undefined) {
+    joiField = joiField.default(properties.default);
+  }
 
+  if (properties.required && !isUpdate) {
+    joiField = joiField.required();
+  } else {
+    joiField = joiField.optional();
+  }
 
-module.exports = {
-    generateCreateJoiSchema: (mongooseSchemaObj, extraValidations = {}) => generateJoiSchema(mongooseSchemaObj, extraValidations, false),
-    generateUpdateJoiSchema: (mongooseSchemaObj, extraValidations = {}) => generateJoiSchema(mongooseSchemaObj, extraValidations, true)
+  return joiField;
 }
+
+/**
+ * Builds a complete Joi object schema.
+ */
+function buildJoiSchema(schemaDefinition, isUpdate = false) {
+  const schema = {};
+  for (const [key, props] of Object.entries(schemaDefinition)) {
+    schema[key] = buildJoiField(props, isUpdate);
+  }
+  return Joi.object(schema).options({ abortEarly: false, allowUnknown: false });
+}
+
+
+
+module.exports = buildJoiSchema;

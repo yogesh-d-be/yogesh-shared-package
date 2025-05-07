@@ -20,6 +20,8 @@ const createMongooseConnection = require("./persistance/connection");
 // const { envSchema } = require("./schemas/envSchema");
 const joiSchema = require("./schemas/joiSchema");
 
+//routes
+const loadRoutes = require("./routes");
 
 //utils
 const ApiError = require("./utils/apiError");
@@ -47,9 +49,12 @@ module.exports = {
         createMongooseModel: createModel,
         createMongooseConnection
     },
-    schema:{
-        // envSchema,
-        joiSchema
+    // schema:{
+    //     // envSchema,
+    //     // joiSchema
+    // },
+    routes:{
+        loadRoutes
     },
     utils:{
         customError:ApiError,

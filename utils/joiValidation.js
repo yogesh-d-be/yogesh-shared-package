@@ -1,31 +1,42 @@
 const { StatusCodes } = require('http-status-codes');
-const ApiError = require("./apiError");
+const ApiError = require("../utils/apiError");
+const buildJoiSchema = require("../schemas/joiSchema");
 
-exports.validateData = (schema, data, allowUnknown = false) => {
-    if (data?.upsert) {
-      return data.upsert;
+function validateSchema(bodySchemaDef = null, querySchemaDef = null, paramsSchemaDef = null) {
+  return (req, res, next) => {
+    const isUpdate = req.method === "PUT" || req.method === "PATCH";
+    const errors = [];
+
+    if (bodySchemaDef) {
+      const schema = buildJoiSchema(bodySchemaDef, isUpdate);
+      const { error } = schema.validate(req.body);
+      if (error) {
+        errors.push(...error.details.map((e) => `Body: ${e.message.replace(/["]/g, "")}`));
+      }
     }
-  
-    const { error, value } = schema.validate(data, {
-      abortEarly: false,  // collect all errors
-      allowUnknown,       // allow extra keys if needed
-      stripUnknown: true, // auto remove unknown fields
-    });
-  
-    if (error) {
-      const formattedErrors = error.details.map((detail) => ({
-        field: detail.path.join('.'),
-        message: detail.message.replace(/['"]/g, ''),
-      }));
-  
-      console.error("Validation Error:", JSON.stringify(formattedErrors, null, 2));
-  
-      const err = new Error("Validation failed");
-      err.name = "ValidationError";
-      err.details = formattedErrors;
-     return next(new ApiError(StatusCodes.BAD_REQUESTS, `Vaildation Error: ${err}`))
+
+    if (querySchemaDef) {
+      const schema = buildJoiSchema(querySchemaDef);
+      const { error } = schema.validate(req.query);
+      if (error) {
+        errors.push(...error.details.map((e) => `Query: ${e.message.replace(/["]/g, "")}`));
+      }
     }
-  
-    return value;
+
+    if (paramsSchemaDef) {
+      const schema = buildJoiSchema(paramsSchemaDef);
+      const { error } = schema.validate(req.params);
+      if (error) {
+        errors.push(...error.details.map((e) => `Params: ${e.message.replace(/["]/g, "")}`));
+      }
+    }
+
+    if (errors.length > 0) {
+      return next(new ApiError(StatusCodes.BAD_REQUEST, errors.join(", ")));
+    }
+
+    next();
   };
-  
+}
+
+module.exports = validateSchema;
