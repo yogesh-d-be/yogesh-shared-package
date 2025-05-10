@@ -56,8 +56,11 @@ const initErrorCatcher = (appEnv = 'production') => {
     };
 
     return {
-      initErrorCatcher,
+      errorConverter,
       errorHandler,
     };
 
 };
+
+module.exports = initErrorCatcher;
+

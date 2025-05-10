@@ -1,24 +1,48 @@
 {
   "name": "node-mongo-core",
-  "version": "1.0.9",
-  "description": "A shared package containing middleware, config, and utility functions.",
+  "version": "1.0.10",
+  "description": "A shared package containing config, middleware, schemas, and utilities for Node.js & MongoDB-based services.",
   "main": "index.js",
   "type": "commonjs",
+  "exports": {
+    "./config/global": "./config/global.config.js",
+    "./config/logger": "./config/logger.js",
+    "./config/morgan": "./config/morgan.js",
+    "./middleware/auth": "./middleware/auth.middleware.js",
+    "./middleware/logger": "./middleware/logger.middleware.js",
+    "./middleware/rateLimiter": "./middleware/rateLimiter.middleware.js",
+    "./middleware/multer": "./middleware/multer.js",
+    "./persistance/connection": "./persistance/connection.js",
+    "./persistance/createModel": "./persistance/createModel.js",
+    "./utils/apiError": "./utils/apiError.js",
+    "./utils/apiResponse": "./utils/apiResponse.js",
+    "./utils/catchAsync": "./utils/catchAsync.js",
+    "./utils/hashPassword": "./utils/hashPassword.js",
+    "./utils/joiValidation": "./utils/joiValidation.js",
+    "./utils/corsConfig": "./utils/corsConfig.js",
+    "./routes": "./routes/index.js",
+    "./": "./index.js"
+  },
   "scripts": {
-    "test": "echo \"No tests yet\" && exit 0"
+    "start": "node index.js",
+    "prepublishOnly": "echo 'Preparing to publish @yogesh-d-be/node-mongo-core...'"
   },
   "publishConfig": {
     "registry": "https://package.99wincart.com/"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yogesh-d-be/yogesh-shared-package.git"
+    "url": "https://github.com/yogesh-d-be/yogesh-shared-package.git"
   },
   "keywords": [
     "middleware",
     "config",
     "schemas",
-    "utils"
+    "utils",
+    "shared",
+    "core",
+    "nodejs",
+    "mongodb"
   ],
   "author": "Yogesh (yogesh-d-be)",
   "license": "MIT",
@@ -30,6 +54,8 @@
     "node": ">=14.0.0"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-rate-limit": "^7.5.0",
@@ -38,6 +64,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.14.0",
     "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.2",
     "uuid": "^11.1.0",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0"

@@ -19,16 +19,16 @@ exports.validateEnv = (customKeys =[]) => {
         );
         process.exit(1);
       }
-      const config = {
-        app:{
-            name: value.APP_NAME,
-            env: value.NODE_ENV,
-        },
-        mongodb:{
-            uri: value.MONGODB_URI
-        },
-      }
-
+      // const config = {
+      //   app:{
+      //       name: value.APP_NAME,
+      //       env: value.NODE_ENV,
+      //   },
+      //   mongodb:{
+      //       uri: value.MONGODB_URI
+      //   },
+      // }
+      const config = {};
 
       for (const [key, , target =null] of customKeys){
         const upperKey = key.toUpperCase();
