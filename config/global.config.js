@@ -3,45 +3,38 @@ const {getEnvSchema} = require('../schemas/envSchema');
 
 
 
-exports.validateEnv = (customKeys =[]) => {
+exports.validateEnv = (customKeys = []) => {
+  const envSchema = getEnvSchema(
+    customKeys.map(({ key, description }) => [key, description])
+  );
 
-    const envSchema = getEnvSchema(customKeys.map(([key, description])=> [key, description]));
-    
-    const {error, value} = envSchema.validate(process.env,{
-        allUnknown: true,
-        abortEarly: false
-    });     
+  const { error, value } = envSchema.validate(process.env, {
+    allUnknown: true,
+    abortEarly: false
+  });
 
-    if (error) {
-        console.error(
-          '❌ Environment validation error:',
-          error.details.map((e) => e.message).join(', ')
-        );
-        process.exit(1);
-      }
-      // const config = {
-      //   app:{
-      //       name: value.APP_NAME,
-      //       env: value.NODE_ENV,
-      //   },
-      //   mongodb:{
-      //       uri: value.MONGODB_URI
-      //   },
-      // }
-      const config = {};
+  if (error) {
+    console.error(
+      '❌ Environment validation error:',
+      error.details.map((e) => e.message).join(', ')
+    );
+    process.exit(1);
+  }
 
-      for (const [key, , target =null] of customKeys){
-        const upperKey = key.toUpperCase();
-        const lowerKey = key.toLowerCase();
+  const config = {};
 
-        if(target){
-            config[target] = config[target] || {};
-            config[target][lowerKey] = value[upperKey];
-        }else{
-            config[lowerKey] = value[upperKey];
-        }
-      }
+  for (const { key, target = null } of customKeys) {
+    const upperKey = key.toUpperCase();
+    const lowerKey = key.toLowerCase();
 
-      return config;
-}
+    if (target) {
+      config[target] = config[target] || {};
+      config[target][lowerKey] = value[upperKey];
+    } else {
+      config[lowerKey] = value[upperKey];
+    }
+  }
+
+  return config;
+};
 

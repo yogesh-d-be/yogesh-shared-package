@@ -1,10 +1,11 @@
 {
   "name": "node-mongo-core",
-  "version": "1.0.10",
+  "version": "1.0.14",
   "description": "A shared package containing config, middleware, schemas, and utilities for Node.js & MongoDB-based services.",
   "main": "index.js",
   "type": "commonjs",
   "exports": {
+    ".": "./index.js",
     "./config/global": "./config/global.config.js",
     "./config/logger": "./config/logger.js",
     "./config/morgan": "./config/morgan.js",
@@ -14,14 +15,15 @@
     "./middleware/multer": "./middleware/multer.js",
     "./persistance/connection": "./persistance/connection.js",
     "./persistance/createModel": "./persistance/createModel.js",
+    "./schemas/schemaFieldBuilder":"./schemas/schemaFieldBuilder",
+    "./schemas/createSchemaRegistry":"./schemas/createSchemaRegistry",
     "./utils/apiError": "./utils/apiError.js",
     "./utils/apiResponse": "./utils/apiResponse.js",
     "./utils/catchAsync": "./utils/catchAsync.js",
     "./utils/hashPassword": "./utils/hashPassword.js",
     "./utils/joiValidation": "./utils/joiValidation.js",
     "./utils/corsConfig": "./utils/corsConfig.js",
-    "./routes": "./routes/index.js",
-    "./": "./index.js"
+    "./routes": "./routes/index.js"
   },
   "scripts": {
     "start": "node index.js",

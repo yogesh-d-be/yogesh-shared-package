@@ -19,6 +19,8 @@ const createMongooseConnection = require("./persistance/connection");
 //schema
 // const { envSchema } = require("./schemas/envSchema");
 const joiSchema = require("./schemas/joiSchema");
+const { SchemaFieldBuilder } = require("./schemas/schemaFieldBuilder");
+const { createSchemaRegistry } = require("./schemas/createSchemaRegistry");
 
 //routes
 const loadRoutes = require("./routes");
@@ -49,10 +51,12 @@ module.exports = {
         createMongooseModel: createModel,
         createMongooseConnection
     },
-    // schema:{
-    //     // envSchema,
-    //     // joiSchema
-    // },
+    schema:{
+        // envSchema,
+        // joiSchema
+        SchemaFieldBuilder,
+        createSchemaRegistry
+    },
     routes:{
         loadRoutes
     },
