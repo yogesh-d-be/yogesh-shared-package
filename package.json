@@ -1,6 +1,6 @@
 {
   "name": "node-mongo-core",
-  "version": "1.0.14",
+  "version": "1.1.0",
   "description": "A shared package containing config, middleware, schemas, and utilities for Node.js & MongoDB-based services.",
   "main": "index.js",
   "type": "commonjs",
@@ -46,7 +46,7 @@
     "nodejs",
     "mongodb"
   ],
-  "author": "Yogesh (yogesh-d-be)",
+  "author": "Yogesh D <yogesh.d.be@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/yogesh-d-be/yogesh-shared-package/issues"
