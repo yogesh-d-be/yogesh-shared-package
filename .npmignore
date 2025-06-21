@@ -1,0 +1,5 @@
+nohup.out
+.npmrc.save
+config/logs/
+*.log
+*.json

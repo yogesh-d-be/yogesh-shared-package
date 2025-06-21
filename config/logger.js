@@ -2,6 +2,13 @@ const path = require('path');
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
 
+winston.addColors({
+  info: 'green',
+  error: 'red',
+  warn: 'yellow',
+  debug: 'blue'
+});
+
 // Error formatter
 const enumerateErrorFormat = winston.format((info) => {
   if (info instanceof Error) {
@@ -18,6 +25,7 @@ const getLogFormat = () =>
   winston.format.combine(
     winston.format.timestamp({ format: 'DD-MM-YYYY HH:mm:ss' }),
     enumerateErrorFormat(),
+    winston.format.colorize({ all: true }),
     winston.format.printf(({ timestamp, level, message, stack }) => {
       return stack
         ? `${timestamp} [${level.toUpperCase()}]: ${message}\n${stack}`
